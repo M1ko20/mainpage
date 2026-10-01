@@ -25,21 +25,30 @@ function ChipGroup<T extends string>({
     <fieldset>
       <legend className="text-[12px] font-medium uppercase tracking-[0.14em] text-mute-dark">{legend}</legend>
       <div className="mt-4 flex flex-wrap gap-2">
-        {options.map((opt) => (
-          <label key={opt} className="cursor-pointer">
-            <input
-              type="radio"
-              name={name}
-              value={opt}
-              checked={value === opt}
-              onChange={() => onChange(opt)}
-              className="peer sr-only"
-            />
-            <span className="inline-flex h-11 items-center rounded-full px-5 text-[15px] ring-1 ring-white/20 transition-colors hover:ring-white/50 peer-checked:bg-paper peer-checked:text-ink peer-checked:ring-paper peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-signal">
-              {opt}
-            </span>
-          </label>
-        ))}
+        {options.map((opt) => {
+          const selected = value === opt
+          return (
+            <label key={opt} className="relative cursor-pointer touch-manipulation">
+              <input
+                type="radio"
+                name={name}
+                value={opt}
+                checked={selected}
+                onChange={() => onChange(opt)}
+                className="peer sr-only"
+              />
+              {/* The selected look comes straight from state and switches instantly — no transition or hover state to get stuck on touch screens. */}
+              <span
+                className={`inline-flex h-11 items-center gap-2 rounded-full text-[15px] ring-1 peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-signal ${
+                  selected ? 'bg-paper pl-4 pr-5 font-medium text-ink ring-paper' : 'px-5 text-paper ring-white/25'
+                }`}
+              >
+                {selected && <Check size={16} strokeWidth={2.5} aria-hidden="true" />}
+                {opt}
+              </span>
+            </label>
+          )
+        })}
       </div>
     </fieldset>
   )
