@@ -246,19 +246,27 @@ test('content is visible before any JavaScript has loaded', async ({ page }) => 
   }
 })
 
-test('FAQ items toggle independently on a phone', async ({ page }) => {
+test('FAQ opens one answer at a time and survives rapid taps', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto('/', { waitUntil: 'networkidle' })
   const buttons = page.locator('button[aria-controls*="-panel-"]')
-  const third = buttons.nth(2)
-  await third.scrollIntoViewIfNeeded()
-  const before = (await third.boundingBox())!.y
-  await third.click()
-  await expect(third).toHaveAttribute('aria-expanded', 'true')
-  // The first answer stays open, so the tapped question does not move.
-  await expect(buttons.first()).toHaveAttribute('aria-expanded', 'true')
-  await page.waitForTimeout(700)
-  expect(Math.abs((await third.boundingBox())!.y - before)).toBeLessThan(2)
-  await third.click()
-  await expect(third).toHaveAttribute('aria-expanded', 'false')
+  const count = await buttons.count()
+  await buttons.first().scrollIntoViewIfNeeded()
+  const state = () =>
+    page.evaluate(() =>
+      [...document.querySelectorAll('button[aria-controls*="-panel-"]')].map((b) => ({
+        expanded: b.getAttribute('aria-expanded') === 'true',
+        height: Math.round(document.getElementById(b.getAttribute('aria-controls')!)!.getBoundingClientRect().height),
+      })),
+    )
+  // Taps land faster than the animation: every panel must still settle fully open or fully closed.
+  for (const i of [2, 4, 1, 1, 3, 0, 0, 0, 2]) await buttons.nth(i % count).click({ delay: 20 })
+  await page.waitForTimeout(900)
+  const settled = await state()
+  expect(settled.filter((s) => s.expanded)).toHaveLength(1)
+  expect(settled[2].expanded).toBe(true)
+  for (const s of settled) expect(s.height > 0).toBe(s.expanded)
+  await buttons.nth(2).click()
+  await page.waitForTimeout(900)
+  expect((await state()).every((s) => !s.expanded && s.height === 0)).toBe(true)
 })
