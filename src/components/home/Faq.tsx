@@ -38,9 +38,7 @@ export function Faq() {
                         {item.q}
                       </span>
                       <span
-                        className={`grid size-10 shrink-0 place-items-center rounded-full ring-1 ring-ink/15 transition-[transform,background-color,color] duration-500 ease-out-expo ${
-                          expanded ? 'rotate-45 bg-ink text-paper' : ''
-                        }`}
+                        className={`grid size-10 shrink-0 place-items-center rounded-full ring-1 ring-ink/15 transition-transform duration-500 ease-out-expo ${expanded ? 'rotate-45' : ''}`}
                         aria-hidden="true"
                       >
                         <Plus size={18} />
