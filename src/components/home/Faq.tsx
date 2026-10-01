@@ -37,12 +37,16 @@ export function Faq() {
                       <span className="text-[clamp(1.15rem,1.7vw,1.6rem)] font-medium tracking-[-0.02em] transition-colors group-hover:text-signal">
                         {item.q}
                       </span>
-                      <span
-                        className={`grid size-10 shrink-0 place-items-center rounded-full ring-1 ring-ink/15 transition-transform duration-500 ease-out-expo ${expanded ? 'rotate-45' : ''}`}
+                      {/* Driven by script like the panel below, so the icon cannot fall out of step with it. */}
+                      <m.span
+                        className="grid size-10 shrink-0 place-items-center rounded-full ring-1 ring-ink/15"
                         aria-hidden="true"
+                        initial={false}
+                        animate={{ rotate: expanded ? 45 : 0 }}
+                        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                       >
                         <Plus size={18} />
-                      </span>
+                      </m.span>
                     </button>
                   </h3>
                   {/* Height is animated in script: a grid-template-rows transition sticks half-way in mobile Safari. */}
