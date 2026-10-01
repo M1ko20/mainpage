@@ -1,0 +1,58 @@
+{
+  "siteName": "Adam Mikoláš",
+  "routes": [
+    {
+      "path": "/",
+      "lang": "cs",
+      "title": "Adam Mikoláš — Weby, které přivádějí klienty",
+      "description": "Nezávislý webdesignér a vývojář. Výrazné a rychlé weby pro firmy, které si lidé mají zapamatovat — od první skici po spuštění.",
+      "image": "/work/og-home.jpg",
+      "themeColor": "#F1EFEA"
+    },
+    {
+      "path": "/portfolio/aurelis",
+      "lang": "en",
+      "title": "Aurelis — Architecture & Development",
+      "description": "Aurelis designs and develops quiet, enduring buildings. Residential, cultural and mixed-use architecture. A concept website by Adam Mikoláš.",
+      "image": "/work/og-aurelis.jpg",
+      "themeColor": "#ECE9E3"
+    },
+    {
+      "path": "/portfolio/noir",
+      "lang": "en",
+      "title": "Noir — Contemporary Dining",
+      "description": "An evening in eleven courses. Fire, smoke and patience at Noir, a contemporary dining room. A concept website by Adam Mikoláš.",
+      "image": "/work/og-noir.jpg",
+      "themeColor": "#0B0A09"
+    },
+    {
+      "path": "/portfolio/nexora",
+      "lang": "en",
+      "title": "Nexora — AI Infrastructure",
+      "description": "Nexora is the inference layer for production AI: deploy any model, scale to zero, observe everything. A concept website by Adam Mikoláš.",
+      "image": "/work/og-nexora.jpg",
+      "themeColor": "#05060B"
+    },
+    {
+      "path": "/portfolio/form-object",
+      "lang": "en",
+      "title": "Form / Object — Creative Studio",
+      "description": "Form / Object is a creative studio for identity, spatial and digital work — for brands that refuse the default. A concept website by Adam Mikoláš.",
+      "image": "/work/og-form-object.jpg",
+      "themeColor": "#E9E7E1"
+    },
+    {
+      "path": "/portfolio/alex-morgan",
+      "lang": "en",
+      "title": "Alex Morgan — Strategy, Leadership, Advisory",
+      "description": "Independent advisor to boards and executive teams on strategy, transformation and leadership. A concept website by Adam Mikoláš.",
+      "image": "/work/og-alex-morgan.jpg",
+      "themeColor": "#FFFFFF"
+    }
+  ],
+  "notFound": {
+    "lang": "cs",
+    "title": "Stránka nenalezena — Adam Mikoláš",
+    "description": "Tato stránka neexistuje. Vraťte se na portfolio."
+  }
+}

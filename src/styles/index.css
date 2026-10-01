@@ -1,0 +1,262 @@
+@import 'tailwindcss';
+
+@theme {
+  /* — Main portfolio — */
+  --color-paper: #f1efea;
+  --color-paper-2: #e8e5de;
+  --color-ink: #0f0f0e;
+  --color-ink-2: #1a1a18;
+  --color-mute: #676560;
+  --color-mute-dark: #9c9a93;
+  --color-signal: #ff5a1f;
+  --font-sans: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Instrument Sans Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-serif: 'Instrument Serif', ui-serif, Georgia, serif;
+
+  /* — Concept sites (only generate CSS where used) — */
+  --font-cormorant: 'Cormorant Garamond', ui-serif, Georgia, serif;
+  --font-jost: 'Jost Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-bodoni: 'Bodoni Moda Variable', ui-serif, Georgia, serif;
+  --font-manrope: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-grotesk: 'Space Grotesk Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-jbmono: 'JetBrains Mono Variable', ui-monospace, monospace;
+  --font-archivo: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-plex: 'IBM Plex Mono', ui-monospace, monospace;
+  --font-inter: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-feature-settings: 'ss01', 'cv11';
+    overflow-x: clip;
+  }
+
+  #root {
+    overflow-x: clip;
+  }
+
+  ::selection {
+    background: var(--color-signal);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus-color, var(--color-signal));
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  img {
+    user-select: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Neutral UI chrome that sits above every concept site. */
+  .concept-ui {
+    font-family: var(--font-sans);
+    --focus-color: #ff5a1f;
+  }
+
+  .skip-link {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 300;
+    transform: translateY(-200%);
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    background: #0f0f0e;
+    color: #f1efea;
+    font: 500 14px/1 var(--font-sans);
+  }
+  .skip-link:focus {
+    transform: none;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .marquee {
+    animation: marquee var(--marquee-duration, 40s) linear infinite;
+  }
+  .pause-on-hover:hover .marquee {
+    animation-play-state: paused;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes reel-progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes noir-drip {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes nx-flow {
+  to {
+    stroke-dashoffset: -32;
+  }
+}
+
+/*
+ * Entrance animations for above-the-fold content. They are pure CSS so they
+ * start with the first paint of the pre-rendered HTML, before any JavaScript
+ * has loaded. Timing comes from --delay / --d (see src/lib/enter.ts).
+ */
+.enter {
+  animation-duration: var(--d, 1s);
+  animation-delay: var(--delay, 0s);
+  animation-timing-function: var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
+  animation-fill-mode: both;
+}
+.enter-rise {
+  animation-name: enter-rise;
+}
+.enter-fade {
+  animation-name: enter-fade;
+}
+.enter-mask {
+  animation-name: enter-mask;
+}
+.enter-blur {
+  animation-name: enter-blur;
+}
+.enter-clip-up {
+  animation-name: enter-clip-up;
+}
+.enter-clip-down {
+  animation-name: enter-clip-down;
+}
+.enter-clip-left {
+  animation-name: enter-clip-left;
+}
+.enter-zoom {
+  animation-name: enter-zoom;
+}
+.enter-slide {
+  animation-name: enter-slide;
+}
+
+@keyframes enter-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--y, 24px), 0);
+  }
+}
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes enter-mask {
+  from {
+    /* Past the padded word mask in RevealText, so accents don't peek out before the reveal. */
+    transform: translate3d(0, 160%, 0);
+  }
+}
+@keyframes enter-blur {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0);
+    filter: blur(12px);
+  }
+}
+@keyframes enter-clip-up {
+  from {
+    clip-path: inset(100% 0% 0% 0%);
+  }
+  to {
+    clip-path: inset(0% 0% 0% 0%);
+  }
+}
+@keyframes enter-clip-down {
+  from {
+    clip-path: inset(0% 0% 100% 0%);
+  }
+  to {
+    clip-path: inset(0% 0% 0% 0%);
+  }
+}
+@keyframes enter-clip-left {
+  from {
+    clip-path: inset(0% 0% 0% 100%);
+  }
+  to {
+    clip-path: inset(0% 0% 0% 0%);
+  }
+}
+@keyframes enter-zoom {
+  from {
+    transform: scale(var(--scale, 1.15));
+  }
+}
+@keyframes enter-slide {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--x, -12%), 0, 0);
+  }
+}
+.enter-pop {
+  animation-name: enter-pop;
+}
+@keyframes enter-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
