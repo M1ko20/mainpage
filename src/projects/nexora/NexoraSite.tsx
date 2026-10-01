@@ -4,6 +4,7 @@ import { animate, AnimatePresence, m, useInView, useMotionValue, useReducedMotio
 import { ArrowRight, Check, Copy, Menu as MenuIcon, X } from 'lucide-react'
 import { useEffect, useId, useRef, useState, type PointerEvent, type ReactNode } from 'react'
 import { ConceptBar } from '../../components/shared/ConceptBar'
+import { Reveal } from '../../components/shared/Reveal'
 import { useConcept } from '../../lib/concept-context'
 import { enter } from '../../lib/enter'
 import { useSeo } from '../../lib/seo'
@@ -19,15 +20,9 @@ const kicker = 'font-jbmono text-[12px] uppercase tracking-[0.18em] text-[#8A90A
 
 function Up({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   return (
-    <m.div
-      className={className}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-      transition={{ duration: 0.8, ease: EASE, delay }}
-    >
+    <Reveal className={className} y={20} margin="0px 0px -10% 0px" duration={0.8} ease={EASE} delay={delay}>
       {children}
-    </m.div>
+    </Reveal>
   )
 }
 
@@ -224,15 +219,13 @@ function Terminal({ lines }: { lines: string[] }) {
       </div>
       <pre className="min-h-[220px] overflow-x-auto p-5 font-jbmono text-[12.5px] leading-[1.85] md:p-6 md:text-[13.5px]">
         {lines.map((l, i) => (
-          <m.code
+          <code
             key={`${l}-${i}`}
-            className={`block ${l.startsWith('$') ? 'text-white' : l.startsWith('✓') ? 'text-emerald-300' : 'text-white/55'}`}
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35, delay: 0.15 + i * 0.16 }}
+            className={`enter enter-slide block ${l.startsWith('$') ? 'text-white' : l.startsWith('✓') ? 'text-emerald-300' : 'text-white/55'}`}
+            style={enter(0.15 + i * 0.16, 0.35, { x: '-6px', ease: 'ease' })}
           >
             {l || ' '}
-          </m.code>
+          </code>
         ))}
       </pre>
     </div>
@@ -505,12 +498,13 @@ function Testimonials() {
         </Up>
         <ul className="mt-14 grid gap-4 md:grid-cols-3">
           {testimonials.map((t, i) => (
-              <m.li
+              <Reveal
+                as="li"
                 key={t.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '0px 0px -10% 0px' }}
-                transition={{ duration: 0.8, ease: EASE, delay: i * 0.08 }}
+                y={20}
+                duration={0.8}
+                ease={EASE}
+                delay={i * 0.08}
                 className="flex h-full flex-col justify-between gap-10 rounded-3xl bg-gradient-to-b from-white/[0.05] to-white/[0.015] p-7 ring-1 ring-white/[0.08] md:p-8"
               >
                 <blockquote className="font-grotesk text-[18px] leading-[1.55] tracking-[-0.01em] text-white/90">“{t.quote}”</blockquote>
@@ -523,7 +517,7 @@ function Testimonials() {
                     <span className="text-[#8A90A6]">{t.role}</span>
                   </span>
                 </p>
-              </m.li>
+              </Reveal>
           ))}
         </ul>
       </div>

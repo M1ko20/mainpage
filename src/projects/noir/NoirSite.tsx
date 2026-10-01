@@ -5,6 +5,7 @@ import { AnimatePresence, m, useMotionValueEvent, useReducedMotion, useScroll, u
 import { useEffect, useId, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react'
 import { ConceptBar } from '../../components/shared/ConceptBar'
 import { Img } from '../../components/shared/Img'
+import { Reveal } from '../../components/shared/Reveal'
 import { useConcept } from '../../lib/concept-context'
 import { enter } from '../../lib/enter'
 import { useSeo } from '../../lib/seo'
@@ -24,15 +25,9 @@ const GRAIN =
 
 function Appear({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   return (
-    <m.div
-      className={className}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -12% 0px' }}
-      transition={{ duration: 1.3, ease: EASE, delay }}
-    >
+    <Reveal className={className} y={28} margin="0px 0px -12% 0px" duration={1.3} ease={EASE} delay={delay}>
       {children}
-    </m.div>
+    </Reveal>
   )
 }
 
@@ -295,7 +290,7 @@ function Menu() {
             ))}
           </div>
 
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             <m.div
               key={menu.id}
               role="tabpanel"

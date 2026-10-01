@@ -222,3 +222,43 @@ test('keyboard users get a skip link and visible focus', async ({ page }) => {
   await expect(skip).toBeFocused()
   await expect(skip).toBeInViewport()
 })
+
+test('content is visible before any JavaScript has loaded', async ({ page }) => {
+  // A slow phone connection paints the pre-rendered HTML long before the bundle arrives.
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.route('**/*.js', (route) => route.abort())
+  for (const path of routes) {
+    await page.goto(path, { waitUntil: 'load' })
+    await page.waitForTimeout(2500)
+    const hidden = await page.evaluate(() =>
+      [...document.querySelectorAll('h1, h2, h3, p, li, img')]
+        .filter((el) => {
+          if (!el.getBoundingClientRect().height) return false
+          for (let n: Element | null = el; n && n !== document.body; n = n.parentElement) {
+            const cs = getComputedStyle(n)
+            if (cs.opacity === '0' || cs.clipPath.includes('inset(100%')) return true
+          }
+          return false
+        })
+        .map((el) => `${el.tagName.toLowerCase()} "${(el.textContent ?? '').trim().slice(0, 40)}"`),
+    )
+    expect(hidden, path).toEqual([])
+  }
+})
+
+test('FAQ items toggle independently on a phone', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/', { waitUntil: 'networkidle' })
+  const buttons = page.locator('button[aria-controls*="-panel-"]')
+  const third = buttons.nth(2)
+  await third.scrollIntoViewIfNeeded()
+  const before = (await third.boundingBox())!.y
+  await third.click()
+  await expect(third).toHaveAttribute('aria-expanded', 'true')
+  // The first answer stays open, so the tapped question does not move.
+  await expect(buttons.first()).toHaveAttribute('aria-expanded', 'true')
+  await page.waitForTimeout(700)
+  expect(Math.abs((await third.boundingBox())!.y - before)).toBeLessThan(2)
+  await third.click()
+  await expect(third).toHaveAttribute('aria-expanded', 'false')
+})

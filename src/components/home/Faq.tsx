@@ -4,7 +4,14 @@ import { questions } from '../../data/content'
 import { SectionLabel } from './SectionLabel'
 
 export function Faq() {
-  const [open, setOpen] = useState<number | null>(0)
+  // Items toggle independently: closing one above the tapped question would pull it out from under the finger.
+  const [open, setOpen] = useState<ReadonlySet<number>>(() => new Set([0]))
+  const toggle = (i: number) =>
+    setOpen((prev) => {
+      const next = new Set(prev)
+      if (!next.delete(i)) next.add(i)
+      return next
+    })
   const baseId = useId()
 
   return (
@@ -19,7 +26,7 @@ export function Faq() {
           </h2>
           <ul className="mt-10 border-t border-ink/15 md:mt-14">
             {questions.map((item, i) => {
-              const expanded = open === i
+              const expanded = open.has(i)
               const panelId = `${baseId}-panel-${i}`
               const buttonId = `${baseId}-button-${i}`
               return (
@@ -30,8 +37,8 @@ export function Faq() {
                       type="button"
                       aria-expanded={expanded}
                       aria-controls={panelId}
-                      onClick={() => setOpen(expanded ? null : i)}
-                      className="group flex w-full items-center justify-between gap-6 py-6 text-left md:py-8"
+                      onClick={() => toggle(i)}
+                      className="group flex w-full touch-manipulation items-center justify-between gap-6 py-6 text-left md:py-8"
                     >
                       <span className="text-[clamp(1.15rem,1.7vw,1.6rem)] font-medium tracking-[-0.02em] transition-colors group-hover:text-signal">
                         {item.q}

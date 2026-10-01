@@ -30,6 +30,12 @@ export function Nav() {
     if (nextHidden !== hidden) setHidden(nextHidden)
   })
 
+  // The page can load already scrolled (reload, #hash, scrolling before the script arrived).
+  useEffect(() => {
+    const sync = () => setScrolled(window.scrollY > 24)
+    sync()
+  }, [])
+
   useEffect(() => {
     if (!open) return
     const { style } = document.body

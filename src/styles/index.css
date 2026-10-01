@@ -260,3 +260,44 @@
     transform: scale(0.6);
   }
 }
+
+/*
+ * Scroll-triggered reveals (src/lib/useReveal.ts). The resting state is the
+ * visible one, so content never depends on JavaScript to appear: the script
+ * marks an element below the viewport `pending`, then `in` when it is reached.
+ */
+.reveal,
+.reveal-word {
+  transition-duration: var(--d, 0.9s);
+  transition-delay: var(--delay, 0s);
+  transition-timing-function: var(--ease, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.reveal-rise {
+  transition-property: opacity, transform;
+}
+.reveal-clip {
+  clip-path: inset(0% 0% 0% 0%);
+  transition-property: clip-path;
+}
+.reveal-rule,
+.reveal-word {
+  transition-property: transform;
+}
+[data-reveal='pending'],
+[data-reveal='pending'] .reveal-word {
+  transition: none;
+}
+.reveal-rise[data-reveal='pending'] {
+  opacity: 0;
+  transform: translate3d(0, var(--y, 24px), 0);
+}
+.reveal-clip[data-reveal='pending'] {
+  clip-path: inset(100% 0% 0% 0%);
+}
+.reveal-rule[data-reveal='pending'] {
+  transform: scaleX(0);
+}
+.reveal-words[data-reveal='pending'] .reveal-word {
+  /* Past the padded word mask in RevealText, as in enter-mask. */
+  transform: translate3d(0, 160%, 0);
+}

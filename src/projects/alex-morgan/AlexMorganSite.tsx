@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { ConceptBar } from '../../components/shared/ConceptBar'
 import { Img } from '../../components/shared/Img'
+import { Reveal } from '../../components/shared/Reveal'
 import { useConcept } from '../../lib/concept-context'
 import { enter } from '../../lib/enter'
 import { useSeo } from '../../lib/seo'
@@ -27,28 +28,15 @@ const sections = [
 
 function Fade({ children, className, delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   return (
-    <m.div
-      className={className}
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '0px 0px -8% 0px' }}
-      transition={{ duration: 0.6, ease: EASE, delay }}
-    >
+    <Reveal className={className} y={12} margin="0px 0px -8% 0px" duration={0.6} ease={EASE} delay={delay}>
       {children}
-    </m.div>
+    </Reveal>
   )
 }
 
 function Rule({ className = '' }: { className?: string }) {
   return (
-    <m.div
-      aria-hidden="true"
-      className={`h-px origin-left bg-[#111111] ${className}`}
-      initial={{ scaleX: 0 }}
-      whileInView={{ scaleX: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 1, ease: EASE }}
-    />
+    <Reveal variant="rule" aria-hidden className={`h-px origin-left bg-[#111111] ${className}`} margin="0px" duration={1} ease={EASE} />
   )
 }
 
@@ -324,7 +312,7 @@ function Testimonials() {
     <Section id="testimonials" index={5} title="Testimonials">
       <div className="grid grid-cols-12 gap-x-6 gap-y-10">
         <div className="col-span-12 min-h-[16rem] md:col-span-10 md:min-h-[18rem]" aria-live="polite">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="wait" initial={false}>
             <m.figure key={i} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.4, ease: EASE }}>
               <blockquote className="text-[clamp(1.7rem,3.4vw,3.1rem)] font-medium leading-[1.14] tracking-[-0.035em]">
                 <span style={{ color: RED }}>“</span>

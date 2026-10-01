@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react'
+import { useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
 import { DEFAULT_WIDTHS, photoSrcSet, photoUrl } from '../../lib/unsplash'
 
 interface ImgProps {
@@ -25,7 +25,8 @@ interface ImgProps {
  * Responsive, lazy image in a fixed frame. The frame owns the dimensions, so a
  * slow or failed remote image never moves the layout — it degrades to a
  * tonal surface that fits the page's palette. Priority (above-the-fold) images
- * skip the fade so they paint as soon as they arrive.
+ * skip the fade so they paint as soon as they arrive. The pre-rendered markup is
+ * never hidden: the fade is only armed once the script finds the image still loading.
  */
 export function Img({
   photo,
@@ -42,15 +43,17 @@ export function Img({
   imgStyle,
   fallback = 'linear-gradient(135deg, rgba(128,128,128,.18), rgba(128,128,128,.06))',
 }: ImgProps) {
-  const [state, setState] = useState<'loading' | 'loaded' | 'error'>('loading')
+  const [state, setState] = useState<'idle' | 'loading' | 'loaded' | 'error'>('idle')
   const ref = useRef<HTMLImageElement>(null)
   const ratio = aspect ? 1 / aspect : undefined
   const resolvedSrc = photo ? photoUrl(photo, 1200, { ratio }) : src
   const resolvedSrcSet = photo ? photoSrcSet(photo, widths, { ratio }) : srcSet
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const img = ref.current
-    if (img?.complete) setState(img.naturalWidth > 0 ? 'loaded' : 'error')
+    if (!img) return
+    if (!img.complete) setState('loading')
+    else setState(img.naturalWidth > 0 ? 'loaded' : 'error')
   }, [resolvedSrc])
 
   return (
@@ -70,7 +73,7 @@ export function Img({
           decoding="async"
           onLoad={() => setState('loaded')}
           onError={() => setState('error')}
-          className={`absolute inset-0 h-full w-full object-cover ${priority ? '' : `transition-opacity duration-700 ${state === 'loaded' ? 'opacity-100' : 'opacity-0'}`} ${imgClassName}`}
+          className={`absolute inset-0 h-full w-full object-cover ${priority ? '' : `transition-opacity duration-700 ${state === 'loading' ? 'opacity-0' : 'opacity-100'}`} ${imgClassName}`}
           style={imgStyle}
         />
       )}

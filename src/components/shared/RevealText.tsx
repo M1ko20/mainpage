@@ -1,7 +1,7 @@
-import { m } from 'motion/react'
-import type { ElementType } from 'react'
+import type { CSSProperties, ElementType } from 'react'
 import { tie } from '../../lib/czech'
-import { enter } from '../../lib/enter'
+import { cubic, enter } from '../../lib/enter'
+import { useReveal } from '../../lib/useReveal'
 
 export interface RevealPart {
   text: string
@@ -21,7 +21,7 @@ interface RevealTextProps {
   ease?: readonly [number, number, number, number]
   /**
    * Animate on first paint with CSS (no JavaScript needed), for above-the-fold
-   * headings. Otherwise the reveal runs when scrolled into view.
+   * headings. Otherwise the reveal runs when scrolled into view (see useReveal).
    */
   immediate?: boolean
 }
@@ -53,6 +53,7 @@ export function RevealText({
   ease = [0.16, 1, 0.3, 1],
   immediate = false,
 }: RevealTextProps) {
+  const ref = useReveal<HTMLSpanElement>('0px 0px -12% 0px')
   const label = lines.map((l) => toParts(l).map((p) => p.text).join('')).join(' ')
   let index = 0
 
@@ -85,13 +86,7 @@ export function RevealText({
 
   return (
     <Tag id={id} className={className} aria-label={label}>
-      <m.span
-        aria-hidden="true"
-        className="block"
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, margin: '0px 0px -12% 0px' }}
-      >
+      <span ref={ref} aria-hidden="true" className="reveal-words block">
         {lines.map((line, li) => (
           <span key={li} className={`block ${lineClassName}`}>
             {toParts(line).map((part, pi) =>
@@ -101,22 +96,19 @@ export function RevealText({
                 const i = index++
                 return (
                   <span key={`${pi}-${wi}`} className={MASK}>
-                    <m.span
-                      className={`inline-block ${part.className ?? ''}`}
-                      variants={{
-                        hidden: { y: '160%' },
-                        show: { y: '0%', transition: { duration, ease, delay: delay + i * stagger } },
-                      }}
+                    <span
+                      className={`reveal-word inline-block ${part.className ?? ''}`}
+                      style={{ '--delay': `${delay + i * stagger}s`, '--d': `${duration}s`, '--ease': cubic(ease) } as CSSProperties}
                     >
                       {word}
-                    </m.span>
+                    </span>
                   </span>
                 )
               }),
             )}
           </span>
         )).flatMap((line, li) => (li ? [' ', line] : [line]))}
-      </m.span>
+      </span>
     </Tag>
   )
 }

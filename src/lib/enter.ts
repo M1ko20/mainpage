@@ -19,3 +19,6 @@ export function enter(delay = 0, duration = 1, { y, x, scale, ease }: EnterOptio
   if (ease) style['--ease'] = ease
   return style as CSSProperties
 }
+
+/** A motion-style easing tuple as a CSS timing function. */
+export const cubic = (ease: readonly [number, number, number, number]) => `cubic-bezier(${ease.join(',')})`
